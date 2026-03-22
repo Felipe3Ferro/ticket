@@ -1,0 +1,22 @@
+# ----------------------------------------
+# Build e Compilados (CRÍTICO BLOQUEAR)
+# ----------------------------------------
+build/
+bin/
+
+# ----------------------------------------
+# Caches e Wrappers do Gradle
+# ----------------------------------------
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# ----------------------------------------
+# Configurações de IDE (VS Code, Eclipse)
+# ----------------------------------------
+.vscode/
+.settings/
+.classpath
+.factorypath
+.project

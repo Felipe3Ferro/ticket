@@ -1,0 +1,28 @@
+server:
+  port: 8081 # Rodando na 8081 para deixar a 8080 livre para o futuro Gateway ou Pedidos
+
+spring:
+  application:
+    name: ticket-catalog
+
+  # Configuração do PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ticketdb
+    username: myuser
+    password: mypassword
+    driver-class-name: org.postgresql.Driver
+
+  # Configuração do Hibernate/JPA
+  jpa:
+    hibernate:
+      ddl-auto: update # ATENÇÃO: Em prod usamos Flyway/Liquibase. Aqui, o Hibernate vai criar as tabelas pra nós.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Configuração do Redis (Cache)
+  data:
+    redis:
+      host: localhost
+      port: 6379
