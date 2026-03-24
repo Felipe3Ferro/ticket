@@ -1,12 +1,15 @@
 package br.ferro.ticket.catalog.app.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record EventoRequestDTO(
-    String nome,
+    @NotBlank String nome,
     String descricao,
-    LocalDateTime dataHora,
+    @FutureOrPresent LocalDateTime dataHora,
     String local,
-    List<TipoIngressoRequestDTO> tiposIngresso
+    @Valid List<TipoIngressoRequestDTO> tiposIngresso
 ) {}
