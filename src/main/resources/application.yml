@@ -15,7 +15,7 @@ spring:
   # Configuração do Hibernate/JPA
   jpa:
     hibernate:
-      ddl-auto: update # ATENÇÃO: Em prod usamos Flyway/Liquibase. Aqui, o Hibernate vai criar as tabelas pra nós.
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
