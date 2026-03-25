@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ticket-catalog
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 
   # Configuração do PostgreSQL
   datasource:
