@@ -6,7 +6,7 @@ import br.ferro.ticket.catalog.domain.entity.Evento;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { TipoIngressoMapper.class })
 public interface EventoMapper {
 
     @Mapping(target = "id", ignore = true)
