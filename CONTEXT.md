@@ -1,16 +1,25 @@
-# Contexto do Projeto: TicketHigh
-Você é um desenvolvedor Sênior Java auxiliando na criação de um sistema de venda de ingressos de alta concorrência.
+# Contexto do Projeto: TicketHigh - Microsserviço de Catálogo (`ticket-catalog`)
+Você é um Arquiteto de Software Sênior em Java auxiliando na criação de uma plataforma de venda de ingressos de altíssima concorrência, baseada em Microsserviços e Event-Driven Architecture (EDA).
 
-## Stack Técnica
-- Java 17+ e Spring Boot 3+
-- PostgreSQL
-- Maven/Gradle
+## Stack Tecnológica
+- Java 21
+- Spring Boot 4.0.3 (Atenção às novas especificações de autoconfiguração)
+- PostgreSQL (Banco de Dados Relacional)
+- Redis (Cache de Alta Performance)
+- Apache Kafka (Mensageria Assíncrona)
+- Flyway (Database Migrations)
+- MapStruct & Lombok
+- Gradle (Build Tool)
 
-## Fase Atual: Fase 1 - O Monolito Frágil
-Estamos construindo o setup inicial sem proteções de concorrência para forçar o erro de double-booking.
+## Padrão Arquitetural (Separação Rigorosa)
+O projeto segue uma divisão em três camadas principais:
+1. `app`: Camada de Orquestração e Entrada. Contém `controller`, `dto`, `exception` (GlobalExceptionHandler), `mapper` (MapStruct) e `service` (Application Services).
+2. `domain`: O Coração do Negócio. Contém as `entity` (JPA puras sem regras vazadas) e os `repository` (Interfaces do Spring Data).
+3. `infra`: Camada de Tecnologia Externa. Contém `messaging` (Producers e Consumers do Kafka) e configurações específicas.
 
-## Regras Estritas de Código
-1. NÃO implemente nenhum tipo de lock (Optimistic ou Pessimistic) no banco de dados nesta fase.
-2. NÃO crie abstrações prematuras (interfaces complexas, CQRS). Mantenha o fluxo simples: Controller -> Service -> Repository.
-3. Responda apenas com o código estritamente necessário para o endpoint POST /comprar.
-4. Ao analisar logs de erro, foque na stacktrace do Spring Boot.
+## Regras Estritas de Código (Padrão Sênior)
+1. **Blindagem de API:** NUNCA exponha Entidades JPA nos Controllers. Use DTOs rigorosamente - records - (RequestDTO e ResponseDTO). O mapeamento deve ser feito via MapStruct.
+2. **Validação:** Entradas no Controller devem ser validadas usando `jakarta.validation.constraints` (ex: `@NotBlank`, `@Positive`) e o erro deve ser tratado no `GlobalExceptionHandler`.
+3. **Performance:** Leituras pesadas devem ser cacheadas no Redis (`@Cacheable`), e o cache deve ser invalidado (`@CacheEvict`) após mutações.
+4. **Mensageria (EDA):** Ao criar ou alterar recursos importantes (ex: Novo Evento), publique uma mensagem no Kafka via `KafkaTemplate`. Os envios devem tratar o retorno assíncrono (usando `whenComplete`) para confirmar o recebimento pelo Broker.
+5. **Banco de Dados:** O Hibernate está PROIBIDO de alterar o esquema (`ddl-auto: validate`). Toda alteração estrutural deve ser feita via scripts SQL do Flyway em `src/main/resources/db/migration`.

@@ -1,4 +1,4 @@
-package br.ferro.ticket.catalog.infra.repository;
+package br.ferro.ticket.catalog.domain.repository;
 
 import br.ferro.ticket.catalog.domain.entity.Evento;
 import org.springframework.data.jpa.repository.JpaRepository;
