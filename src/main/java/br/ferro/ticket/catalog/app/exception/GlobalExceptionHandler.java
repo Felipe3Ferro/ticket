@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
         return new ErroResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                "Erro de validação",
-                errors
+                "Erro de validação", // → serialized as "message"
+                errors // → serialized as "errors"
         );
     }
 
@@ -37,7 +37,6 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
-                null
-        );
+                null);
     }
 }
