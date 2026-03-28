@@ -4,7 +4,6 @@ import br.ferro.ticket.catalog.app.dto.EventoRequestDTO;
 import br.ferro.ticket.catalog.app.dto.EventoResponseDTO;
 import br.ferro.ticket.catalog.app.dto.TipoIngressoRequestDTO;
 import br.ferro.ticket.catalog.app.service.EventoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

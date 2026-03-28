@@ -1,4 +1,4 @@
-package br.ferro.ticket;
+package br.ferro.ticket.catalog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
