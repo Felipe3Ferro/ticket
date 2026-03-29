@@ -1,10 +1,10 @@
 package br.ferro.ticket.catalog.infra.messaging;
 
 import br.ferro.ticket.catalog.app.dto.EventoResponseDTO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
