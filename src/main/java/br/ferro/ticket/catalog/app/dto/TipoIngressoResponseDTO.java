@@ -4,8 +4,4 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TipoIngressoResponseDTO(
-    UUID id,
-    String nomeSetor,
-    BigDecimal preco,
-    Integer quantidadeDisponivel
-) {}
+    UUID id, String nomeSetor, BigDecimal preco, Integer quantidadeDisponivel) {}

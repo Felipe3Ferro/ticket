@@ -8,5 +8,4 @@ import java.math.BigDecimal;
 public record TipoIngressoRequestDTO(
     @NotBlank String nomeSetor,
     @PositiveOrZero BigDecimal preco,
-    @NotNull @PositiveOrZero Integer quantidadeDisponivel
-) {}
+    @NotNull @PositiveOrZero Integer quantidadeDisponivel) {}

@@ -10,5 +10,4 @@ public record EventoResponseDTO(
     String descricao,
     LocalDateTime dataHora,
     String local,
-    List<TipoIngressoResponseDTO> tiposIngresso
-) {}
+    List<TipoIngressoResponseDTO> tiposIngresso) {}

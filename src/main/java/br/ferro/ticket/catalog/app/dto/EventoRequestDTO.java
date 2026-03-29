@@ -11,5 +11,4 @@ public record EventoRequestDTO(
     String descricao,
     @FutureOrPresent LocalDateTime dataHora,
     String local,
-    @Valid List<TipoIngressoRequestDTO> tiposIngresso
-) {}
+    @Valid List<TipoIngressoRequestDTO> tiposIngresso) {}

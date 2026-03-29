@@ -9,9 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TipoIngressoMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "evento", ignore = true)
-    TipoIngresso toEntity(TipoIngressoRequestDTO tipoIngressoRequestDTO);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "evento", ignore = true)
+  TipoIngresso toEntity(TipoIngressoRequestDTO tipoIngressoRequestDTO);
 
-    TipoIngressoResponseDTO toResponseDTO(TipoIngresso tipoIngresso);
+  TipoIngressoResponseDTO toResponseDTO(TipoIngresso tipoIngresso);
 }
