@@ -6,11 +6,13 @@ import br.ferro.ticket.catalog.app.exception.ResourceNotFoundException;
 import br.ferro.ticket.catalog.app.mapper.EventoMapper;
 import br.ferro.ticket.catalog.domain.entity.Evento;
 import br.ferro.ticket.catalog.domain.repository.EventoRepository;
+import br.ferro.ticket.catalog.infra.config.CacheConstants;
 import br.ferro.ticket.catalog.infra.messaging.EventoProducer;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class EventoService {
   private final EventoProducer eventoProducer;
 
   @Transactional
+  @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
   public EventoResponseDTO criarEvento(EventoRequestDTO eventoRequestDTO) {
     Evento evento = eventoMapper.toEntity(eventoRequestDTO);
     Evento eventoSalvo = eventoRepository.save(evento);
@@ -34,16 +37,18 @@ public class EventoService {
   }
 
   @Transactional(readOnly = true)
+  @Cacheable(value = CacheConstants.CACHE_EVENTOS)
   public List<EventoResponseDTO> listarEventos() {
-    return eventoRepository.findAll().stream()
+    return eventoRepository.findAllWithTiposIngresso().stream()
         .map(eventoMapper::toResponseDTO)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Transactional(readOnly = true)
+  @Cacheable(value = CacheConstants.CACHE_EVENTO, key = "#id")
   public EventoResponseDTO buscarEventoPorId(UUID id) {
     return eventoRepository
-        .findById(id)
+        .findByIdWithTiposIngresso(id)
         .map(eventoMapper::toResponseDTO)
         .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com o ID: " + id));
   }

@@ -12,15 +12,22 @@ import org.springframework.stereotype.Component;
 public class EventoProducer {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
-  private static final String TOPIC = "ticket-catalog.evento.criado";
 
   public void enviarEventoCriado(EventoResponseDTO evento) {
-    try {
-      log.info("Enviando evento de criação para o tópico: {}", TOPIC);
-      kafkaTemplate.send(TOPIC, evento);
-      log.info("Evento enviado com sucesso: {}", evento.id());
-    } catch (Exception e) {
-      log.error("Erro ao enviar evento de criação para o Kafka", e);
-    }
+    kafkaTemplate
+        .send(KafkaTopics.EVENTO_CRIADO, evento.id().toString(), evento)
+        .whenComplete(
+            (result, ex) -> {
+              if (ex != null) {
+                log.error(
+                    "Falha ao publicar evento criado no Kafka. ID: {}", evento.id(), ex);
+              } else {
+                log.info(
+                    "Evento criado publicado com sucesso. ID: {}, tópico: {}, offset: {}",
+                    evento.id(),
+                    KafkaTopics.EVENTO_CRIADO,
+                    result.getRecordMetadata().offset());
+              }
+            });
   }
 }

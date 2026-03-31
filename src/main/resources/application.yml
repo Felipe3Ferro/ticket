@@ -33,11 +33,14 @@ spring:
       port: 6379
 
 # Configuração do Apache Kafka
+  cache:
+    type: redis
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
 
 springdoc:
   swagger-ui:
