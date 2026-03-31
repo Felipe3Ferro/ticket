@@ -34,7 +34,9 @@ public class CacheConfig {
                 CacheConstants.CACHE_EVENTOS,
                     defaultConfig().entryTtl(Duration.ofMinutes(5)),
                 CacheConstants.CACHE_EVENTO,
-                    defaultConfig().entryTtl(Duration.ofMinutes(10))))
+                    defaultConfig().entryTtl(Duration.ofMinutes(10)),
+                CacheConstants.CACHE_TIPOS_INGRESSO,
+                    defaultConfig().entryTtl(Duration.ofMinutes(5))))
         .build();
   }
 }
