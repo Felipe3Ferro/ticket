@@ -115,7 +115,6 @@ Este projeto segue o padrão **Conventional Commits com Gitmoji**:
 ```
 ✨ feat(evento): adicionar endpoint de criação de evento
 
-Implementa o POST /api/v1/eventos com validação, cache Redis e publicação no Kafka.
 ```
 
 | Tipo       | Gitmoji | Quando usar                              |
