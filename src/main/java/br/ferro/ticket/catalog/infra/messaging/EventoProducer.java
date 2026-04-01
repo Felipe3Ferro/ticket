@@ -1,6 +1,7 @@
 package br.ferro.ticket.catalog.infra.messaging;
 
 import br.ferro.ticket.catalog.app.dto.EventoResponseDTO;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,6 +13,23 @@ import org.springframework.stereotype.Component;
 public class EventoProducer {
 
   private final KafkaTemplate<String, Object> kafkaTemplate;
+
+  public void enviarEventoRemovido(UUID id) {
+    kafkaTemplate
+        .send(KafkaTopics.EVENTO_REMOVIDO, id.toString(), id)
+        .whenComplete(
+            (result, ex) -> {
+              if (ex != null) {
+                log.error("Falha ao publicar evento removido no Kafka. ID: {}", id, ex);
+              } else {
+                log.info(
+                    "Evento removido publicado com sucesso. ID: {}, tópico: {}, offset: {}",
+                    id,
+                    KafkaTopics.EVENTO_REMOVIDO,
+                    result.getRecordMetadata().offset());
+              }
+            });
+  }
 
   public void enviarEventoCriado(EventoResponseDTO evento) {
     kafkaTemplate

@@ -4,7 +4,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import br.ferro.ticket.catalog.app.dto.TipoIngressoRequestDTO;
@@ -149,52 +151,6 @@ class TipoIngressoControllerTest {
     // Act & Assert
     mockMvc
         .perform(get(BASE_URL + "/{id}", eventoId, id))
-        .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.status").value(404));
-  }
-
-  @Test
-  @DisplayName("Deve retornar 200 com tipo atualizado quando dados forem válidos")
-  void atualizar_shouldReturnOk_whenRequestIsValid() throws Exception {
-    // Arrange
-    UUID eventoId = UUID.randomUUID();
-    UUID id = UUID.randomUUID();
-    TipoIngressoRequestDTO requestDTO =
-        new TipoIngressoRequestDTO("VIP Plus", new BigDecimal("200.00"), 80);
-    TipoIngressoResponseDTO responseDTO =
-        new TipoIngressoResponseDTO(id, "VIP Plus", new BigDecimal("200.00"), 80);
-
-    when(tipoIngressoService.atualizar(eq(eventoId), eq(id), any(TipoIngressoRequestDTO.class)))
-        .thenReturn(responseDTO);
-
-    // Act & Assert
-    mockMvc
-        .perform(
-            put(BASE_URL + "/{id}", eventoId, id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.nomeSetor").value("VIP Plus"));
-  }
-
-  @Test
-  @DisplayName("Deve retornar 404 ao atualizar quando tipo de ingresso não existir")
-  void atualizar_shouldReturnNotFound_whenNotFound() throws Exception {
-    // Arrange
-    UUID eventoId = UUID.randomUUID();
-    UUID id = UUID.randomUUID();
-    TipoIngressoRequestDTO requestDTO =
-        new TipoIngressoRequestDTO("VIP", new BigDecimal("150.00"), 100);
-
-    when(tipoIngressoService.atualizar(eq(eventoId), eq(id), any(TipoIngressoRequestDTO.class)))
-        .thenThrow(new ResourceNotFoundException("Tipo de ingresso não encontrado com o ID: " + id));
-
-    // Act & Assert
-    mockMvc
-        .perform(
-            put(BASE_URL + "/{id}", eventoId, id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestDTO)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status").value(404));
   }

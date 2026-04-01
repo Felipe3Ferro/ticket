@@ -48,4 +48,11 @@ public class EventoController {
     EventoResponseDTO evento = eventoService.buscarEventoPorId(id);
     return ResponseEntity.ok(evento);
   }
+
+  @Operation(summary = "Remover evento")
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> removerEvento(@PathVariable UUID id) {
+    eventoService.removerEvento(id);
+    return ResponseEntity.noContent().build();
+  }
 }

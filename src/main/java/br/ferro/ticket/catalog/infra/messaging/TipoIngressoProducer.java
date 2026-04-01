@@ -33,23 +33,4 @@ public class TipoIngressoProducer {
             });
   }
 
-  public void enviarTipoIngressoAtualizado(TipoIngressoResponseDTO tipoIngresso) {
-    kafkaTemplate
-        .send(KafkaTopics.TIPO_INGRESSO_ATUALIZADO, tipoIngresso.id().toString(), tipoIngresso)
-        .whenComplete(
-            (result, ex) -> {
-              if (ex != null) {
-                log.error(
-                    "Falha ao publicar tipo ingresso atualizado no Kafka. ID: {}",
-                    tipoIngresso.id(),
-                    ex);
-              } else {
-                log.info(
-                    "Tipo ingresso atualizado publicado com sucesso. ID: {}, tópico: {}, offset: {}",
-                    tipoIngresso.id(),
-                    KafkaTopics.TIPO_INGRESSO_ATUALIZADO,
-                    result.getRecordMetadata().offset());
-              }
-            });
-  }
 }

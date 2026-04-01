@@ -2,7 +2,6 @@ package br.ferro.ticket.catalog.app.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -149,39 +148,6 @@ class TipoIngressoServiceTest {
     assertThatThrownBy(() -> tipoIngressoService.buscarPorId(eventoId, id))
         .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(id.toString());
-  }
-
-  @Test
-  @DisplayName("Deve atualizar tipo de ingresso e publicar no Kafka quando encontrado")
-  void atualizar_shouldUpdateAndPublish_whenFound() {
-    // Arrange
-    UUID eventoId = UUID.randomUUID();
-    UUID id = UUID.randomUUID();
-
-    TipoIngressoRequestDTO requestDTO =
-        new TipoIngressoRequestDTO("VIP Plus", new BigDecimal("200.00"), 80);
-
-    TipoIngresso existente = new TipoIngresso();
-    existente.setId(id);
-
-    TipoIngressoResponseDTO responseDTO =
-        new TipoIngressoResponseDTO(id, "VIP Plus", new BigDecimal("200.00"), 80);
-
-    when(tipoIngressoRepository.findByIdAndEventoId(id, eventoId))
-        .thenReturn(Optional.of(existente));
-    doNothing().when(tipoIngressoMapper).updateEntity(requestDTO, existente);
-    when(tipoIngressoRepository.save(existente)).thenReturn(existente);
-    when(tipoIngressoMapper.toResponseDTO(existente)).thenReturn(responseDTO);
-
-    // Act
-    TipoIngressoResponseDTO result = tipoIngressoService.atualizar(eventoId, id, requestDTO);
-
-    // Assert
-    assertThat(result.nomeSetor()).isEqualTo("VIP Plus");
-
-    verify(tipoIngressoMapper).updateEntity(requestDTO, existente);
-    verify(tipoIngressoRepository).save(existente);
-    verify(tipoIngressoProducer).enviarTipoIngressoAtualizado(responseDTO);
   }
 
   @Test

@@ -13,6 +13,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,5 +52,21 @@ public class EventoService {
         .findByIdWithTiposIngresso(id)
         .map(eventoMapper::toResponseDTO)
         .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com o ID: " + id));
+  }
+
+  @Transactional
+  @Caching(
+      evict = {
+        @CacheEvict(value = CacheConstants.CACHE_EVENTO, key = "#id"),
+        @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
+      })
+  public void removerEvento(UUID id) {
+    Evento evento =
+        eventoRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com o ID: " + id));
+
+    eventoRepository.delete(evento);
+    eventoProducer.enviarEventoRemovido(id);
   }
 }

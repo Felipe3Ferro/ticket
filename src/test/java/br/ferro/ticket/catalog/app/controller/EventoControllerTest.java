@@ -2,13 +2,16 @@ package br.ferro.ticket.catalog.app.controller;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import br.ferro.ticket.catalog.app.dto.EventoRequestDTO;
 import br.ferro.ticket.catalog.app.dto.EventoResponseDTO;
 import br.ferro.ticket.catalog.app.dto.TipoIngressoRequestDTO;
+import br.ferro.ticket.catalog.app.exception.ResourceNotFoundException;
 import br.ferro.ticket.catalog.app.service.EventoService;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -66,6 +69,35 @@ class EventoControllerTest {
         .andExpect(header().string("Location", containsString(responseDTO.id().toString())))
         .andExpect(jsonPath("$.id").value(responseDTO.id().toString()))
         .andExpect(jsonPath("$.nome").value(responseDTO.nome()));
+  }
+
+  @Test
+  @DisplayName("Deve retornar 204 No Content ao remover evento existente")
+  void removerEvento_shouldReturnNoContent_whenFound() throws Exception {
+    // Arrange
+    UUID id = UUID.randomUUID();
+
+    // Act & Assert
+    mockMvc
+        .perform(delete("/api/v1/eventos/{id}", id))
+        .andExpect(status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("Deve retornar 404 ao remover evento que não existe")
+  void removerEvento_shouldReturnNotFound_whenNotFound() throws Exception {
+    // Arrange
+    UUID id = UUID.randomUUID();
+
+    doThrow(new ResourceNotFoundException("Evento não encontrado com o ID: " + id))
+        .when(eventoService)
+        .removerEvento(id);
+
+    // Act & Assert
+    mockMvc
+        .perform(delete("/api/v1/eventos/{id}", id))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status").value(404));
   }
 
   @Test

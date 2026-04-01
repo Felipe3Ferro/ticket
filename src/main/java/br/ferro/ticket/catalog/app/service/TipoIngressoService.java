@@ -82,32 +82,6 @@ public class TipoIngressoService {
         @CacheEvict(value = CacheConstants.CACHE_EVENTO, key = "#eventoId"),
         @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
       })
-  public TipoIngressoResponseDTO atualizar(
-      UUID eventoId, UUID id, TipoIngressoRequestDTO requestDTO) {
-    TipoIngresso existente =
-        tipoIngressoRepository
-            .findByIdAndEventoId(id, eventoId)
-            .orElseThrow(
-                () ->
-                    new ResourceNotFoundException(
-                        "Tipo de ingresso não encontrado com o ID: " + id));
-
-    tipoIngressoMapper.updateEntity(requestDTO, existente);
-    TipoIngresso atualizado = tipoIngressoRepository.save(existente);
-    TipoIngressoResponseDTO responseDTO = tipoIngressoMapper.toResponseDTO(atualizado);
-
-    tipoIngressoProducer.enviarTipoIngressoAtualizado(responseDTO);
-
-    return responseDTO;
-  }
-
-  @Transactional
-  @Caching(
-      evict = {
-        @CacheEvict(value = CacheConstants.CACHE_TIPOS_INGRESSO, key = "#eventoId"),
-        @CacheEvict(value = CacheConstants.CACHE_EVENTO, key = "#eventoId"),
-        @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
-      })
   public void remover(UUID eventoId, UUID id) {
     TipoIngresso existente =
         tipoIngressoRepository

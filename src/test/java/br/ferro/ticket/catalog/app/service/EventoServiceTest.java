@@ -129,6 +129,40 @@ class EventoServiceTest {
   }
 
   @Test
+  @DisplayName("Deve remover evento e publicar no Kafka quando encontrado")
+  void removerEvento_shouldDeleteAndPublish_whenFound() {
+    // Arrange
+    UUID id = UUID.randomUUID();
+    Evento evento = new Evento();
+    evento.setId(id);
+
+    when(eventoRepository.findById(id)).thenReturn(Optional.of(evento));
+
+    // Act
+    eventoService.removerEvento(id);
+
+    // Assert
+    verify(eventoRepository).delete(evento);
+    verify(eventoProducer).enviarEventoRemovido(id);
+  }
+
+  @Test
+  @DisplayName("Deve lançar ResourceNotFoundException ao remover quando evento não existir")
+  void removerEvento_shouldThrowException_whenNotFound() {
+    // Arrange
+    UUID id = UUID.randomUUID();
+
+    when(eventoRepository.findById(id)).thenReturn(Optional.empty());
+
+    // Act & Assert
+    assertThatThrownBy(() -> eventoService.removerEvento(id))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessageContaining(id.toString());
+
+    verify(eventoRepository).findById(id);
+  }
+
+  @Test
   @DisplayName("Deve lançar ResourceNotFoundException quando o ID não existir")
   void buscarEventoPorId_shouldThrowException_whenNotFound() {
     // Arrange

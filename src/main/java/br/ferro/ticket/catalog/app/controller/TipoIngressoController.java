@@ -48,15 +48,6 @@ public class TipoIngressoController {
     return ResponseEntity.ok(tipoIngressoService.buscarPorId(eventoId, id));
   }
 
-  @Operation(summary = "Atualizar tipo de ingresso")
-  @PutMapping("/{id}")
-  public ResponseEntity<TipoIngressoResponseDTO> atualizar(
-      @PathVariable UUID eventoId,
-      @PathVariable UUID id,
-      @Valid @RequestBody TipoIngressoRequestDTO requestDTO) {
-    return ResponseEntity.ok(tipoIngressoService.atualizar(eventoId, id, requestDTO));
-  }
-
   @Operation(summary = "Remover tipo de ingresso")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> remover(@PathVariable UUID eventoId, @PathVariable UUID id) {
