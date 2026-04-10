@@ -24,7 +24,7 @@ import lombok.ToString;
 public class Evento {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
   private String nome;
@@ -39,4 +39,16 @@ public class Evento {
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private List<TipoIngresso> tiposIngresso;
+
+  public void definirTiposIngresso(List<TipoIngresso> tipos) {
+    this.tiposIngresso.clear();
+    if (tipos == null)
+      return;
+    tipos.forEach(this::adicionarTipoIngresso);
+  }
+
+  public void adicionarTipoIngresso(TipoIngresso tipo) {
+    tipo.setEvento(this);
+    this.tiposIngresso.add(tipo);
+  }
 }
