@@ -29,6 +29,7 @@ public class EventoService {
   @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
   public EventoResponseDTO criarEvento(EventoRequestDTO eventoRequestDTO) {
     Evento evento = eventoMapper.toEntity(eventoRequestDTO);
+    evento.definirTiposIngresso(evento.getTiposIngresso());
     Evento eventoSalvo = eventoRepository.save(evento);
 
     EventoResponseDTO eventoResponseDTO = eventoMapper.toResponseDTO(eventoSalvo);
@@ -55,16 +56,14 @@ public class EventoService {
   }
 
   @Transactional
-  @Caching(
-      evict = {
-        @CacheEvict(value = CacheConstants.CACHE_EVENTO, key = "#id"),
-        @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
-      })
+  @Caching(evict = {
+      @CacheEvict(value = CacheConstants.CACHE_EVENTO, key = "#id"),
+      @CacheEvict(value = CacheConstants.CACHE_EVENTOS, allEntries = true)
+  })
   public void removerEvento(UUID id) {
-    Evento evento =
-        eventoRepository
-            .findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com o ID: " + id));
+    Evento evento = eventoRepository
+        .findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com o ID: " + id));
 
     eventoRepository.delete(evento);
     eventoProducer.enviarEventoRemovido(id);
