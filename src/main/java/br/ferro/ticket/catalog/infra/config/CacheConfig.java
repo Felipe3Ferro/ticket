@@ -8,20 +8,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 @Configuration
 @EnableCaching
 public class CacheConfig {
+
+  private GenericJacksonJsonRedisSerializer redisSerializer() {
+    return GenericJacksonJsonRedisSerializer.builder()
+        .enableDefaultTyping(
+            BasicPolymorphicTypeValidator.builder().allowIfBaseType(Object.class).build())
+        .enableSpringCacheNullValueSupport()
+        .build();
+  }
 
   private RedisCacheConfiguration defaultConfig() {
     return RedisCacheConfiguration.defaultCacheConfig()
         .serializeKeysWith(
             RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
         .serializeValuesWith(
-            RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
+            RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer()))
         .disableCachingNullValues();
   }
 
